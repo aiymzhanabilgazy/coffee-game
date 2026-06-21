@@ -1,4 +1,4 @@
-const BACKEND = "http://localhost:3000";
+const BACKEND = "comfortable-charisma-production-bb4b.up.railway.app";
 
 // Защита от двойного запуска (Live Server hot-reload)
 if (window.__coffeeGameStarted) {

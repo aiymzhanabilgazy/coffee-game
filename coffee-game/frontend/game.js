@@ -406,28 +406,22 @@ function showPromoScreen(scene, result) {
         align: "center", wordWrap: { width: 260 }
     }, 480);
 
-    // Белая карточка промокода
-    scene.time.delayedCall(600, () => {
-        const codeBox = scene.add.graphics();
-        codeBox.fillStyle(0xffffff, 1);
-        codeBox.fillRoundedRect(W / 2 - 122, cy - 88, 244, 96, 10);
-        codeBox.alpha = 0;
-        scene.tweens.add({ targets: codeBox, alpha: 1, duration: 300 });
-    });
+    /// Белая карточка + промокод рисуются вместе чтобы текст был поверх
+scene.time.delayedCall(600, () => {
+    const codeBox = scene.add.graphics();
+    codeBox.fillStyle(0xffffff, 1);
+    codeBox.fillRoundedRect(W / 2 - 122, cy - 88, 244, 96, 10);
 
-    addText("Промокод", cy - 72, {
-        fontSize: "12px", fontFamily: "Georgia, serif", fill: "#7a5030", align: "center"
-    }, 680);
+    const labelText = scene.add.text(W / 2, cy - 72, "ПРОМОКОД", {
+        fontSize: "11px", fontFamily: "Georgia, serif",
+        fill: "#7a5030", align: "center", letterSpacing: 3
+    }).setOrigin(0.5);
 
-    addText(result.code, cy - 35, {
-        fontSize: "30px", fontFamily: "Courier New, monospace",
-        fill: "#1a0a00", align: "center", letterSpacing: 3
-    }, 700);
-
-    // Декоративный штрихкод
-    scene.time.delayedCall(750, () => {
-        drawBarcode(scene, W / 2, cy + 10);
-    });
+    const codeText = scene.add.text(W / 2, cy - 40, result.code || "???", {
+        fontSize: "26px", fontFamily: "Courier New, monospace",
+        fill: "#1a0a00", align: "center"
+    }).setOrigin(0.5);
+});
 
     addText("Покажи этот экран бариста\nили назови промокод вслух 👆", cy + 68, {
         fontSize: "13px", fontFamily: "Georgia, serif", fill: "#c8862a",
@@ -456,20 +450,6 @@ function showPromoScreen(scene, result) {
         link.on("pointerup", () => window.open(socialLink, "_blank"));
         scene.tweens.add({ targets: link, alpha: 1, duration: 350 });
     });
-}
-
-// ─── ШТРИХКОД (декор) ────────────────────────────────────────────────────────
-function drawBarcode(scene, cx, y) {
-    const g = scene.add.graphics();
-    g.fillStyle(0x1a0a00, 1);
-    const widths = [2,1,3,1,2,1,1,2,3,1,2,1,3,2,1,1,2,1,2,1,3,1];
-    let x = cx - 56;
-    widths.forEach((w, i) => {
-        if (i % 2 === 0) g.fillRect(x, y - 13, w * 3, 26);
-        x += w * 3 + 1.5;
-    });
-    g.alpha = 0;
-    scene.tweens.add({ targets: g, alpha: 1, duration: 300 });
 }
 
 // ─── КНОПКА СОЦСЕТЕЙ ─────────────────────────────────────────────────────────

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a0a00">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>☕ Coffee Catch</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #0d0500; }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 50%, rgba(80,35,5,0.45) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 25%, rgba(55,20,0,0.3) 0%, transparent 50%),
+      linear-gradient(150deg, #0d0500 0%, #1a0a00 60%, #0d0500 100%);
+    z-index: 0;
+  }
+
+  /* Боковые панели (ПК) */
+  .side {
+    position: fixed; top: 0; height: 100%;
+    width: calc((100vw - min(360px, 100vw)) / 2);
+    z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: space-evenly; padding: 50px 10px;
+  }
+  .side.left  { left: 0; }
+  .side.right { right: 0; }
+  .side svg   { opacity: 0.8; filter: drop-shadow(0 0 10px rgba(200,134,42,0.25)); }
+  .side-label {
+    color: #5a3010; font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; writing-mode: vertical-lr;
+    transform: rotate(180deg); font-family: sans-serif; font-weight: 300;
+  }
+
+  /* Загрузочный экран */
+  #loading {
+    position: fixed; inset: 0; background: #0d0500;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 100; transition: opacity 0.8s ease;
+  }
+  #loading.hidden { opacity: 0; pointer-events: none; }
+  .ld-cup  { font-size: 62px; animation: bob 1.8s ease-in-out infinite; margin-bottom: 20px; }
+  @keyframes bob { 0%,100%{transform:translateY(0) rotate(-4deg)} 50%{transform:translateY(-10px) rotate(4deg)} }
+  .ld-title { color: #c8862a; font-family: Georgia, serif; font-size: 26px; letter-spacing: .14em; margin-bottom: 6px; }
+  .ld-sub   { color: #5a3010; font-family: sans-serif; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; }
+  .ld-bar-wrap { margin-top: 28px; width: 190px; height: 3px; background: rgba(200,134,42,.15); border-radius: 2px; overflow: hidden; }
+  .ld-bar { height: 100%; background: linear-gradient(90deg, #c8862a, #ffdd88); border-radius: 2px; animation: fill 1.8s ease-out forwards; }
+  @keyframes fill { from{width:0%} to{width:100%} }
+
+  #game-wrap {
+    position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+    z-index: 2; width: min(360px, 100vw); height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #game { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  #game canvas {
+    display: block;
+    border-left:  1px solid rgba(200,134,42,0.12);
+    border-right: 1px solid rgba(200,134,42,0.12);
+    box-shadow: 0 0 70px rgba(200,134,42,0.08);
+  }
+
+  @media (max-width: 500px) { .side { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- Загрузка -->
+<div id="loading">
+  <div class="ld-cup">☕</div>
+  <div class="ld-title">Coffee Catch</div>
+  <div class="ld-sub">Готовим зёрна…</div>
+  <div class="ld-bar-wrap"><div class="ld-bar"></div></div>
+</div>
+
+<!-- Левая панель -->
+<div class="side left">
+  <span class="side-label">Поймай свой кофе</span>
+  <svg width="54" height="170" viewBox="0 0 54 170">
+    <line x1="27" y1="8"  x2="29" y2="162" stroke="#5a3010" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="17" cy="38"  rx="13" ry="5.5" fill="#2d6a2d" opacity=".8" transform="rotate(-28 17 38)"/>
+    <ellipse cx="39" cy="72"  rx="13" ry="5.5" fill="#2d6a2d" opacity=".8" transform="rotate(24 39 72)"/>
+    <ellipse cx="16" cy="110" rx="13" ry="5.5" fill="#2d6a2d" opacity=".75" transform="rotate(-22 16 110)"/>
+    <ellipse cx="40" cy="148" rx="11" ry="5"   fill="#2d6a2d" opacity=".7" transform="rotate(28 40 148)"/>
+    <circle cx="12" cy="54"  r="5" fill="#c0392b"/>
+    <circle cx="20" cy="52"  r="5" fill="#c0392b"/>
+    <circle cx="36" cy="89"  r="5" fill="#c0392b"/>
+    <circle cx="44" cy="87"  r="5" fill="#c0392b"/>
+    <circle cx="11" cy="127" r="5" fill="#c0392b"/>
+    <circle cx="19" cy="125" r="5" fill="#c0392b"/>
+  </svg>
+  <svg width="50" height="50" viewBox="0 0 50 50">
+    <ellipse cx="25" cy="46" rx="20" ry="4.5" fill="#a06820"/>
+    <path d="M7 40 L12 10 L38 10 L43 40 Z" fill="#faf0e6"/>
+    <rect x="6" y="8" width="38" height="6" rx="3" fill="#c8862a"/>
+    <ellipse cx="25" cy="13" rx="15" ry="4.5" fill="#3d1500"/>
+    <path d="M43 20 Q56 20 56 30 Q56 40 43 40" stroke="#c8862a" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="19" cy="15" rx="6" ry="2.5" fill="#e8d5b0" opacity=".9"/>
+  </svg>
+  <span class="side-label">1 раз в день</span>
+</div>
+
+<!-- Правая панель -->
+<div class="side right">
+  <span class="side-label">Твой приз ждёт</span>
+  <svg width="54" height="170" viewBox="0 0 54 170">
+    <line x1="27" y1="8"  x2="25" y2="162" stroke="#5a3010" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="39" cy="36"  rx="13" ry="5.5" fill="#2d6a2d" opacity=".8" transform="rotate(28 39 36)"/>
+    <ellipse cx="16" cy="70"  rx="13" ry="5.5" fill="#2d6a2d" opacity=".8" transform="rotate(-24 16 70)"/>
+    <ellipse cx="40" cy="108" rx="13" ry="5.5" fill="#2d6a2d" opacity=".75" transform="rotate(22 40 108)"/>
+    <ellipse cx="14" cy="146" rx="11" ry="5"   fill="#2d6a2d" opacity=".7" transform="rotate(-28 14 146)"/>
+    <circle cx="36" cy="52"  r="5" fill="#c0392b"/>
+    <circle cx="44" cy="50"  r="5" fill="#c0392b"/>
+    <circle cx="11" cy="87"  r="5" fill="#c0392b"/>
+    <circle cx="19" cy="85"  r="5" fill="#c0392b"/>
+    <circle cx="36" cy="124" r="5" fill="#c0392b"/>
+    <circle cx="44" cy="122" r="5" fill="#c0392b"/>
+  </svg>
+  <svg width="40" height="50" viewBox="0 0 40 50">
+    <ellipse cx="20" cy="25" rx="16" ry="22" fill="#3d1500"/>
+    <ellipse cx="14" cy="18" rx="7"  ry="11" fill="#6b3510" opacity=".75"/>
+    <line x1="20" y1="4"  x2="20" y2="46" stroke="#1a0800" stroke-width="2" stroke-linecap="round"/>
+    <line x1="20" y1="17" x2="13" y2="25" stroke="#1a0800" stroke-width="1.5" stroke-linecap="round" opacity=".6"/>
+    <line x1="20" y1="17" x2="27" y2="25" stroke="#1a0800" stroke-width="1.5" stroke-linecap="round" opacity=".6"/>
+  </svg>
+  <span class="side-label">Coffee Game</span>
+</div>
+
+<!-- Игра -->
+<div id="game-wrap">
+  <div id="game"></div>
+</div>
+
+<script>
+  // Сбрасываем флаг при каждой реальной загрузке страницы
+  window.__coffeeGameStarted = false;
+  window.__phaserGame = null;
+</script>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+<script src="game.js"></script>
+<script>
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const l = document.getElementById('loading');
+      if (l) { l.classList.add('hidden'); setTimeout(() => l.remove(), 800); }
+    }, 1900);
+  });
+</script>
+</body>
+</html>

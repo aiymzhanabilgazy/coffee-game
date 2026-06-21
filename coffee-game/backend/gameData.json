@@ -1,0 +1,12 @@
+{
+  "promoCodes": [
+    "COFFEE_FREE_01",
+    "COFFEE_FREE_02"
+  ],
+  "winChance": 0.3,
+  "minBeans": 10,
+  "gameDuration": 15,
+  "prizeTitle": "Скидка 50% на пончик 🍩",
+  "socialLink": "https://instagram.com/yourcoffee",
+  "users": {}
+}

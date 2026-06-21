@@ -350,22 +350,26 @@ function showWinScreen(scene, statusText, result, cy) {
 
     // Кнопка ПОДЕЛИТЬСЯ
     const shareBtn = makeButton(scene, W / 2, cy + 100, "📲  Поделиться в сторис", "#e8303a", "#fff", 234, 48);
-    shareBtn.on("pointerdown", () => doShare(scene, result, cy));
+    shareBtn.on("pointerup", () => doShare(scene, result, cy));
 }
 
 // ─── ШЭРИНГ → ПРОМОКОД ───────────────────────────────────────────────────────
 function doShare(scene, result, cy) {
-    const shareData = {
-        title: "Я выиграл в Coffee Catch! ☕",
-        text: `Поймал кофейные зёрна и выиграл: ${result.prizeTitle || prizeTitle}! Сканируй QR на стаканчике!`,
-        url: window.location.href
-    };
     const afterShare = () => showPromoScreen(scene, result);
 
     if (navigator.share) {
-        navigator.share(shareData).then(afterShare).catch(afterShare);
+        navigator.share({
+            title: "Я выиграл в Coffee Catch! ☕",
+            text: `Поймал кофейные зёрна и выиграл: ${result.prizeTitle || prizeTitle}! Попробуй сам — сканируй QR на стаканчике!`,
+            url: window.location.href
+        })
+        .then(afterShare)
+        .catch(err => {
+            // Если отменили шаринг — всё равно показываем промокод
+            afterShare();
+        });
     } else {
-        navigator.clipboard?.writeText(window.location.href).catch(() => {});
+        // На десктопе — сразу показываем промокод
         afterShare();
     }
 }
@@ -433,7 +437,7 @@ function showPromoScreen(scene, result) {
     // Кнопка копировать
     scene.time.delayedCall(920, () => {
         const copyBtn = makeButton(scene, W / 2, cy + 130, "📋  Скопировать промокод", "#2d6a2d", "#fff", 230, 44);
-        copyBtn.on("pointerdown", () => {
+        copyBtn.on("pointerup", () => {
             navigator.clipboard?.writeText(result.code).catch(() => {});
             const ok = scene.add.text(W / 2, cy + 130, "✓ Скопировано!", {
                 fontSize: "15px", fontFamily: "Georgia, serif", fill: "#66ff88", align: "center"
@@ -449,7 +453,7 @@ function showPromoScreen(scene, result) {
             "Подписаться на нас →",
             { fontSize: "12px", fontFamily: "Georgia, serif", fill: "#7a5030", align: "center" }
         ).setOrigin(0.5).setAlpha(0).setInteractive({ useHandCursor: true });
-        link.on("pointerdown", () => window.open(socialLink, "_blank"));
+        link.on("pointerup", () => window.open(socialLink, "_blank"));
         scene.tweens.add({ targets: link, alpha: 1, duration: 350 });
     });
 }
@@ -473,7 +477,8 @@ function addSocialButton(scene, y) {
     const btn = makeButton(scene, W / 2, y, "☕ Подписаться на нас", "#3d1f00", "#c8862a", 210, 42);
     btn.setAlpha(0);
     scene.tweens.add({ targets: btn, alpha: 1, delay: 400, duration: 350 });
-    btn.on("pointerdown", () => window.open(socialLink, "_blank"));
+    // pointerup работает надёжнее на мобиле чем pointerup
+    btn.on("pointerup", () => window.open(socialLink, "_blank"));
 }
 
 // ─── УНИВЕРСАЛЬНАЯ КНОПКА ────────────────────────────────────────────────────
@@ -491,6 +496,7 @@ function makeButton(scene, x, y, label, bgHex, textColor, w = 200, h = 46) {
     cont.setSize(w, h).setInteractive({ useHandCursor: true });
     cont.on("pointerover",  () => bg.setAlpha(0.82));
     cont.on("pointerout",   () => bg.setAlpha(1));
+    cont.on("pointerup", () => bg.setAlpha(1));
     return cont;
 }
 

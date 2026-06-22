@@ -5,271 +5,275 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>☕ Coffee Game — Админка</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Georgia', serif;
-    background: #0d0500;
-    color: #faf0e6;
-    min-height: 100vh;
-    padding: 0;
-  }
-  header {
-    background: #1e0d00;
-    border-bottom: 2px solid #c8862a;
-    padding: 18px 32px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  header h1 { font-size: 22px; color: #c8862a; }
-  header span { font-size: 13px; color: #7a5030; font-family: sans-serif; }
-  .container { max-width: 860px; margin: 0 auto; padding: 32px 20px; }
-
-  /* Логин */
-  #login-screen {
-    display: flex; flex-direction: column; align-items: center;
-    justify-content: center; min-height: 80vh; gap: 16px;
-  }
-  #login-screen h2 { color: #c8862a; font-size: 20px; }
-  #login-screen input {
-    padding: 12px 16px; background: #1e0d00; border: 1px solid #c8862a;
-    color: #faf0e6; font-size: 16px; border-radius: 8px; width: 260px;
-    font-family: monospace;
-  }
-  #login-screen button {
-    background: #c8862a; color: #0d0500; border: none; padding: 12px 32px;
-    font-size: 15px; border-radius: 8px; cursor: pointer; font-family: Georgia, serif;
-    font-weight: bold;
-  }
-  #login-err { color: #ff5555; font-size: 13px; }
-
-  /* Карточки статистики */
-  .stats-row { display: flex; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
-  .stat-card {
-    background: #1e0d00; border: 1px solid #3d1f00; border-radius: 12px;
-    padding: 18px 24px; flex: 1; min-width: 130px;
-  }
-  .stat-card .val { font-size: 32px; color: #c8862a; font-family: monospace; }
-  .stat-card .lbl { font-size: 12px; color: #7a5030; margin-top: 4px; font-family: sans-serif; }
-
-  /* Секции */
-  .section {
-    background: #1e0d00; border: 1px solid #3d1f00; border-radius: 12px;
-    padding: 24px; margin-bottom: 20px;
-  }
-  .section h2 { color: #c8862a; font-size: 16px; margin-bottom: 18px; border-bottom: 1px solid #3d1f00; padding-bottom: 10px; }
-
-  label { display: block; font-size: 13px; color: #a07850; margin-bottom: 5px; font-family: sans-serif; }
-  input[type="text"], input[type="number"], textarea, select {
-    width: 100%; padding: 10px 14px; background: #0d0500;
-    border: 1px solid #3d1f00; color: #faf0e6; border-radius: 8px;
-    font-size: 14px; font-family: monospace; margin-bottom: 14px;
-    transition: border-color 0.2s;
-  }
-  input:focus, textarea:focus { outline: none; border-color: #c8862a; }
-  textarea { min-height: 100px; resize: vertical; }
-
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-  .btn {
-    background: #c8862a; color: #0d0500; border: none;
-    padding: 11px 24px; font-size: 14px; border-radius: 8px;
-    cursor: pointer; font-family: Georgia, serif; font-weight: bold;
-    transition: opacity 0.15s;
-  }
-  .btn:hover { opacity: 0.85; }
-  .btn.danger { background: #8b1a1a; color: #ffd0d0; }
-  .btn.green  { background: #2d6a2d; color: #d0ffd0; }
-
-  .badge {
-    display: inline-block; background: #2d6a2d; color: #d0ffd0;
-    font-size: 12px; border-radius: 20px; padding: 3px 10px;
-    font-family: sans-serif; margin-left: 8px;
-  }
-  .toast {
-    position: fixed; bottom: 28px; right: 28px;
-    background: #2d6a2d; color: #d0ffd0; padding: 12px 22px;
-    border-radius: 10px; font-family: sans-serif; font-size: 14px;
-    opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 99;
-  }
-  .toast.show { opacity: 1; }
-
-  .code-list {
-    font-family: monospace; font-size: 13px; color: #c8862a;
-    background: #0d0500; border-radius: 6px; padding: 10px 14px;
-    max-height: 110px; overflow-y: auto; border: 1px solid #3d1f00;
-    margin-bottom: 14px; word-break: break-all;
-  }
-  @media (max-width: 540px) { .grid-2 { grid-template-columns: 1fr; } }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Georgia, serif; background: #0d0500; color: #faf0e6; min-height: 100vh; }
+header { background: #1e0d00; border-bottom: 2px solid #c8862a; padding: 16px 28px; display: flex; align-items: center; gap: 14px; }
+header h1 { font-size: 20px; color: #c8862a; }
+header span { font-size: 12px; color: #7a5030; font-family: sans-serif; }
+.layout { display: flex; min-height: calc(100vh - 60px); }
+.sidebar { width: 220px; background: #140800; border-right: 1px solid #3d1f00; padding: 20px 12px; flex-shrink: 0; }
+.sidebar h3 { color: #7a5030; font-size: 11px; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 12px; font-family: sans-serif; }
+.cafe-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; font-size: 14px; color: #c8862a; transition: background .15s; }
+.cafe-item:hover, .cafe-item.active { background: #2d1200; }
+.cafe-item .cafe-sub { font-size: 11px; color: #5a3010; font-family: sans-serif; margin-top: 2px; }
+.add-cafe-btn { width: 100%; margin-top: 12px; background: #2d1200; border: 1px dashed #c8862a; color: #c8862a; padding: 9px; border-radius: 8px; cursor: pointer; font-size: 13px; font-family: Georgia, serif; }
+.add-cafe-btn:hover { background: #3d1f00; }
+.main { flex: 1; padding: 28px 24px; max-width: 800px; }
+.section { background: #1e0d00; border: 1px solid #3d1f00; border-radius: 12px; padding: 22px; margin-bottom: 18px; }
+.section h2 { color: #c8862a; font-size: 15px; margin-bottom: 16px; border-bottom: 1px solid #3d1f00; padding-bottom: 10px; }
+.stats-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.stat-card { background: #1e0d00; border: 1px solid #3d1f00; border-radius: 10px; padding: 14px 18px; flex: 1; min-width: 110px; }
+.stat-card .val { font-size: 28px; color: #c8862a; font-family: monospace; }
+.stat-card .lbl { font-size: 11px; color: #7a5030; margin-top: 3px; font-family: sans-serif; }
+label { display: block; font-size: 12px; color: #a07850; margin-bottom: 4px; font-family: sans-serif; }
+input[type="text"], input[type="number"], textarea, select { width: 100%; padding: 9px 12px; background: #0d0500; border: 1px solid #3d1f00; color: #faf0e6; border-radius: 8px; font-size: 14px; font-family: monospace; margin-bottom: 12px; }
+input:focus, textarea:focus { outline: none; border-color: #c8862a; }
+textarea { min-height: 80px; resize: vertical; font-size: 13px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.btn { background: #c8862a; color: #0d0500; border: none; padding: 10px 22px; font-size: 13px; border-radius: 8px; cursor: pointer; font-family: Georgia, serif; font-weight: bold; }
+.btn:hover { opacity: .85; }
+.btn.green { background: #2d6a2d; color: #d0ffd0; }
+.btn.danger { background: #8b1a1a; color: #ffd0d0; }
+.btn.sm { padding: 7px 14px; font-size: 12px; }
+.prize-card { background: #0d0500; border: 1px solid #3d1f00; border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+.prize-card .prize-title { color: #ffcc00; font-size: 14px; margin-bottom: 8px; }
+.prize-card .prize-count { font-size: 12px; color: #5a3010; font-family: sans-serif; margin-bottom: 8px; }
+.qr-box { background: #0d0500; border: 1px solid #c8862a; border-radius: 8px; padding: 14px; font-family: monospace; color: #c8862a; font-size: 13px; word-break: break-all; margin-top: 8px; }
+#login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 14px; }
+#login-screen h2 { color: #c8862a; }
+#login-screen input { padding: 11px 16px; background: #1e0d00; border: 1px solid #c8862a; color: #faf0e6; font-size: 15px; border-radius: 8px; width: 240px; font-family: monospace; }
+#login-err { color: #ff5555; font-size: 12px; }
+.toast { position: fixed; bottom: 24px; right: 24px; background: #2d6a2d; color: #d0ffd0; padding: 11px 20px; border-radius: 9px; font-family: sans-serif; font-size: 13px; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 99; }
+.toast.show { opacity: 1; }
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 50; align-items: center; justify-content: center; }
+.modal-bg.open { display: flex; }
+.modal { background: #1e0d00; border: 1px solid #c8862a; border-radius: 14px; padding: 28px; width: 340px; }
+.modal h3 { color: #c8862a; margin-bottom: 18px; }
+@media(max-width:600px) { .grid-2 { grid-template-columns: 1fr; } .sidebar { display: none; } }
 </style>
 </head>
 <body>
-
 <div id="toast" class="toast"></div>
-
+ 
 <!-- Логин -->
 <div id="login-screen">
-  <h2>☕ Вход в администрирование</h2>
-  <input type="password" id="pass-input" placeholder="Введите пароль" onkeydown="if(event.key==='Enter')doLogin()">
-  <button onclick="doLogin()">Войти</button>
+  <div style="font-size:48px">☕</div>
+  <h2>Coffee Game Admin</h2>
+  <input type="password" id="pass-input" placeholder="Пароль" onkeydown="if(event.key==='Enter')doLogin()">
+  <button class="btn" onclick="doLogin()">Войти</button>
   <span id="login-err"></span>
 </div>
-
+ 
+<!-- Модалка создания кофейни -->
+<div class="modal-bg" id="modal-new">
+  <div class="modal">
+    <h3>➕ Новая кофейня</h3>
+    <label>ID (только латиница, цифры, дефис)</label>
+    <input type="text" id="new-id" placeholder="blackcat-coffee">
+    <label>Название</label>
+    <input type="text" id="new-name" placeholder="Black Cat Coffee">
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn" onclick="createCafe()">Создать</button>
+      <button class="btn danger" onclick="closeModal()">Отмена</button>
+    </div>
+  </div>
+</div>
+ 
 <!-- Основная панель -->
 <div id="admin-panel" style="display:none">
   <header>
-    <span style="font-size:28px">☕</span>
-    <div>
-      <h1>Coffee Game — Admin</h1>
-      <span>Управление игровой кампанией</span>
-    </div>
+    <span style="font-size:26px">☕</span>
+    <div><h1>Coffee Game Admin</h1><span>Мультитенантное управление</span></div>
   </header>
-
-  <div class="container">
-
-    <!-- Статистика -->
-    <div class="stats-row" id="stats-row">
-      <div class="stat-card"><div class="val" id="st-codes">—</div><div class="lbl">Промокодов осталось</div></div>
-      <div class="stat-card"><div class="val" id="st-users">—</div><div class="lbl">Сыграло сегодня</div></div>
-      <div class="stat-card"><div class="val" id="st-chance">—</div><div class="lbl">Шанс выигрыша %</div></div>
-      <div class="stat-card"><div class="val" id="st-dur">—</div><div class="lbl">Длина игры (сек)</div></div>
+  <div class="layout">
+    <!-- Сайдбар: список кофеен -->
+    <div class="sidebar">
+      <h3>Кофейни</h3>
+      <div id="cafe-list"></div>
+      <button class="add-cafe-btn" onclick="openModal()">+ Добавить кофейню</button>
     </div>
-
-    <!-- Настройки -->
-    <div class="section">
-      <h2>⚙️ Настройки игры</h2>
-      <div class="grid-2">
-        <div>
-          <label>Шанс выигрыша (%)</label>
-          <input type="number" id="f-chance" min="0" max="100" placeholder="30">
-        </div>
-        <div>
-          <label>Минимум зёрен для шанса</label>
-          <input type="number" id="f-minbeans" min="1" placeholder="10">
-        </div>
-        <div>
-          <label>Длительность игры (секунды)</label>
-          <input type="number" id="f-dur" min="5" max="120" placeholder="15">
-        </div>
-        <div>
-          <label>Название приза</label>
-          <input type="text" id="f-prize" placeholder="Скидка 50% на пончик 🍩">
-        </div>
-      </div>
-      <label>Ссылка на соцсети</label>
-      <input type="text" id="f-social" placeholder="https://instagram.com/...">
-      <button class="btn" onclick="saveSettings()">💾 Сохранить настройки</button>
+ 
+    <!-- Основная область -->
+    <div class="main" id="main-area">
+      <p style="color:#5a3010;font-family:sans-serif;font-size:14px">← Выберите кофейню</p>
     </div>
-
-    <!-- Промокоды -->
-    <div class="section">
-      <h2>🎟️ Промокоды <span id="codes-badge" class="badge">0 шт.</span></h2>
-      <label>Текущие промокоды (последние):</label>
-      <div class="code-list" id="code-preview">загрузка…</div>
-      <label>Добавить новые промокоды (по одному на строку или через запятую):</label>
-      <textarea id="f-codes" placeholder="COFFEE_FREE_10&#10;COFFEE_FREE_11&#10;COFFEE_FREE_12"></textarea>
-      <button class="btn green" onclick="addCodes()">➕ Добавить промокоды</button>
-    </div>
-
-    <!-- Сброс -->
-    <div class="section">
-      <h2>🔄 Управление</h2>
-      <p style="font-size:13px;color:#7a5030;margin-bottom:16px;font-family:sans-serif">
-        Сбрасывает лимиты пользователей (все смогут сыграть заново в тот же день).
-        Используйте для тестирования.
-      </p>
-      <button class="btn danger" onclick="resetUsers()">🗑️ Сбросить лимиты игроков</button>
-    </div>
-
   </div>
 </div>
-
+ 
 <script>
-  const BACKEND = "https://comfortable-charisma-production-bb4b.up.railway.app";
-  let adminKey = "";
-
-  function doLogin() {
+const BACKEND = "https://comfortable-charisma-production-bb4b.up.railway.app";
+let adminKey = "";
+let currentCafe = null;
+ 
+function doLogin() {
     adminKey = document.getElementById("pass-input").value;
-    loadData();
-  }
-
-  async function api(method, path, body) {
-    const opts = {
-      method,
-      headers: { "Content-Type": "application/json", "x-admin-key": adminKey }
-    };
+    loadCafeList();
+}
+ 
+async function api(method, path, body) {
+    const opts = { method, headers: { "Content-Type": "application/json", "x-admin-key": adminKey } };
     if (body) opts.body = JSON.stringify(body);
     const r = await fetch(BACKEND + path, opts);
     if (r.status === 401) throw new Error("Unauthorized");
     return r.json();
-  }
-
-  async function loadData() {
+}
+ 
+async function loadCafeList() {
     try {
-      const d = await api("GET", "/admin/data");
-      document.getElementById("login-screen").style.display = "none";
-      document.getElementById("admin-panel").style.display = "block";
-
-      document.getElementById("st-codes").textContent  = d.promoCodes?.length ?? 0;
-      document.getElementById("st-users").textContent  = d.totalUsers ?? 0;
-      document.getElementById("st-chance").textContent = Math.round((d.winChance || 0) * 100) + "%";
-      document.getElementById("st-dur").textContent    = d.gameDuration ?? 15;
-
-      document.getElementById("f-chance").value   = Math.round((d.winChance || 0) * 100);
-      document.getElementById("f-minbeans").value = d.minBeans ?? 10;
-      document.getElementById("f-dur").value      = d.gameDuration ?? 15;
-      document.getElementById("f-prize").value    = d.prizeTitle ?? "";
-      document.getElementById("f-social").value   = d.socialLink ?? "";
-
-      const codes = d.promoCodes || [];
-      document.getElementById("codes-badge").textContent = codes.length + " шт.";
-      document.getElementById("code-preview").textContent =
-        codes.length ? codes.slice(-8).reverse().join("\n") : "Нет промокодов";
+        const list = await api("GET", "/admin/cafes");
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("admin-panel").style.display = "block";
+ 
+        const el = document.getElementById("cafe-list");
+        el.innerHTML = list.map(c => `
+            <div class="cafe-item ${currentCafe === c.id ? 'active' : ''}" onclick="selectCafe('${c.id}')">
+                ☕ ${c.name}
+                <div class="cafe-sub">${c.totalCodes} промокодов · ${c.totalUsers} игроков</div>
+            </div>`).join("");
     } catch(e) {
-      document.getElementById("login-err").textContent = "Неверный пароль или сервер недоступен";
+        document.getElementById("login-err").textContent = "Неверный пароль или сервер недоступен";
     }
-  }
-
-  async function saveSettings() {
-    const winChance  = Number(document.getElementById("f-chance").value) / 100;
-    const minBeans   = Number(document.getElementById("f-minbeans").value);
-    const gameDuration = Number(document.getElementById("f-dur").value);
-    const prizeTitle = document.getElementById("f-prize").value;
-    const socialLink = document.getElementById("f-social").value;
+}
+ 
+async function selectCafe(cafeId) {
+    currentCafe = cafeId;
+    loadCafeList(); // обновить сайдбар
+    const d = await api("GET", `/admin/cafe/${cafeId}`);
+    renderCafePanel(cafeId, d);
+}
+ 
+function renderCafePanel(cafeId, d) {
+    const gameUrl = `https://coffee-game-opal.vercel.app/?cafe=${cafeId}`;
+    document.getElementById("main-area").innerHTML = `
+    <!-- Статистика -->
+    <div class="stats-row">
+        <div class="stat-card"><div class="val">${d.prizes.reduce((s,p)=>s+p.codes.length,0)}</div><div class="lbl">Промокодов всего</div></div>
+        <div class="stat-card"><div class="val">${d.totalUsers}</div><div class="lbl">Сыграло всего</div></div>
+        <div class="stat-card"><div class="val">${Math.round((d.winChance||0)*100)}%</div><div class="lbl">Шанс выигрыша</div></div>
+        <div class="stat-card"><div class="val">${d.gameDuration}с</div><div class="lbl">Длина игры</div></div>
+    </div>
+ 
+    <!-- QR ссылка -->
+    <div class="section">
+        <h2>📲 QR-ссылка для стаканчиков</h2>
+        <div class="qr-box">${gameUrl}</div>
+        <p style="font-size:12px;color:#5a3010;font-family:sans-serif;margin-top:8px">
+            Вставь эту ссылку в генератор QR-кодов (qr-code-generator.com) и распечатай на стаканчиках
+        </p>
+    </div>
+ 
+    <!-- Настройки -->
+    <div class="section">
+        <h2>⚙️ Настройки</h2>
+        <div class="grid-2">
+            <div><label>Название кофейни</label><input type="text" id="f-name" value="${d.name}"></div>
+            <div><label>Шанс выигрыша (%)</label><input type="number" id="f-chance" value="${Math.round((d.winChance||0)*100)}" min="0" max="100"></div>
+            <div><label>Минимум зёрен для шанса</label><input type="number" id="f-minbeans" value="${d.minBeans}"></div>
+            <div><label>Длительность игры (сек)</label><input type="number" id="f-dur" value="${d.gameDuration}"></div>
+        </div>
+        <label>Ссылка Instagram</label>
+        <input type="text" id="f-social" value="${d.socialLink}">
+        <button class="btn" onclick="saveSettings('${cafeId}')">💾 Сохранить</button>
+    </div>
+ 
+    <!-- Призы и промокоды -->
+    <div class="section">
+        <h2>🎁 Призы и промокоды</h2>
+        <p style="font-size:12px;color:#5a3010;font-family:sans-serif;margin-bottom:14px">
+            При выигрыше случайно выбирается один из призов у которых есть промокоды
+        </p>
+        ${d.prizes.map((p, i) => `
+        <div class="prize-card">
+            <div class="prize-title">🎁 ${p.title}</div>
+            <div class="prize-count">Промокодов осталось: <b style="color:#c8862a">${p.codes.length}</b></div>
+            <label>Название приза</label>
+            <input type="text" id="prize-title-${i}" value="${p.title}" style="margin-bottom:8px">
+            <label>Добавить промокоды (по одному на строку)</label>
+            <textarea id="prize-codes-${i}" placeholder="COFFEE_01&#10;COFFEE_02&#10;COFFEE_03"></textarea>
+            <button class="btn green sm" onclick="addCodes('${cafeId}', ${i})">➕ Добавить промокоды</button>
+        </div>`).join("")}
+        <button class="btn sm" onclick="savePrizeTitles('${cafeId}', ${d.prizes.length})">✏️ Сохранить названия призов</button>
+    </div>
+ 
+    <!-- Сброс -->
+    <div class="section">
+        <h2>🔄 Управление</h2>
+        <p style="font-size:12px;color:#5a3010;font-family:sans-serif;margin-bottom:14px">
+            Сбросить лимиты — все смогут сыграть заново (для тестирования)
+        </p>
+        <button class="btn danger" onclick="resetUsers('${cafeId}')">🗑️ Сбросить лимиты игроков</button>
+    </div>`;
+}
+ 
+async function saveSettings(cafeId) {
     try {
-      await api("POST", "/admin/settings", { winChance, minBeans, gameDuration, prizeTitle, socialLink });
-      toast("✅ Настройки сохранены");
-      loadData();
-    } catch(e) { toast("❌ Ошибка: " + e.message, true); }
-  }
-
-  async function addCodes() {
-    const codes = document.getElementById("f-codes").value;
+        await api("POST", `/admin/cafe/${cafeId}/settings`, {
+            name:        document.getElementById("f-name").value,
+            winChance:   Number(document.getElementById("f-chance").value) / 100,
+            minBeans:    Number(document.getElementById("f-minbeans").value),
+            gameDuration: Number(document.getElementById("f-dur").value),
+            socialLink:  document.getElementById("f-social").value
+        });
+        toast("✅ Настройки сохранены");
+        selectCafe(cafeId);
+    } catch(e) { toast("❌ " + e.message, true); }
+}
+ 
+async function addCodes(cafeId, prizeIndex) {
+    const codes = document.getElementById(`prize-codes-${prizeIndex}`).value;
     if (!codes.trim()) return;
     try {
-      const r = await api("POST", "/admin/codes", { codes });
-      toast(`✅ Добавлено ${r.added} промокодов. Всего: ${r.total}`);
-      document.getElementById("f-codes").value = "";
-      loadData();
+        const r = await api("POST", `/admin/cafe/${cafeId}/codes`, { prizeIndex, codes });
+        toast(`✅ Добавлено ${r.added} промокодов`);
+        document.getElementById(`prize-codes-${prizeIndex}`).value = "";
+        selectCafe(cafeId);
     } catch(e) { toast("❌ " + e.message, true); }
-  }
-
-  async function resetUsers() {
-    if (!confirm("Сбросить лимиты всех игроков?")) return;
+}
+ 
+async function savePrizeTitles(cafeId, count) {
+    const prizes = [];
+    for (let i = 0; i < count; i++) {
+        prizes.push({ title: document.getElementById(`prize-title-${i}`).value });
+    }
     try {
-      await api("POST", "/admin/reset-users");
-      toast("✅ Лимиты сброшены");
-      loadData();
+        await api("POST", `/admin/cafe/${cafeId}/prizes`, { prizes });
+        toast("✅ Названия призов обновлены");
+        selectCafe(cafeId);
     } catch(e) { toast("❌ " + e.message, true); }
-  }
-
-  function toast(msg, err = false) {
+}
+ 
+async function resetUsers(cafeId) {
+    if (!confirm("Сбросить лимиты игроков?")) return;
+    try {
+        await api("POST", `/admin/cafe/${cafeId}/reset-users`);
+        toast("✅ Лимиты сброшены");
+        selectCafe(cafeId);
+    } catch(e) { toast("❌ " + e.message, true); }
+}
+ 
+async function createCafe() {
+    const cafeId = document.getElementById("new-id").value.trim();
+    const name   = document.getElementById("new-name").value.trim();
+    if (!cafeId) return;
+    try {
+        await api("POST", "/admin/cafes", { cafeId, name });
+        toast("✅ Кофейня создана!");
+        closeModal();
+        loadCafeList();
+        selectCafe(cafeId);
+    } catch(e) { toast("❌ " + e.message, true); }
+}
+ 
+function openModal()  { document.getElementById("modal-new").classList.add("open"); }
+function closeModal() { document.getElementById("modal-new").classList.remove("open"); }
+ 
+function toast(msg, err = false) {
     const t = document.getElementById("toast");
     t.textContent = msg;
     t.style.background = err ? "#8b1a1a" : "#2d6a2d";
     t.classList.add("show");
     setTimeout(() => t.classList.remove("show"), 3000);
-  }
+}
 </script>
 </body>
 </html>

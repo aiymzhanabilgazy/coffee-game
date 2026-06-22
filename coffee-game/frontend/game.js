@@ -483,11 +483,11 @@ function makeButton(scene, x, y, label, bgHex, textColor, w = 200, h = 46) {
 // ─── ФОН ─────────────────────────────────────────────────────────────────────
 function drawBackground(scene) {
     const bg = scene.add.graphics();
-    bg.fillGradientStyle(0x1a0a00, 0x1a0a00, 0x2d1200, 0x2d1200, 1);
+    bg.fillGradientStyle(0x3d1a00, 0x3d1a00, 0x5a2800, 0x5a2800, 1);
     bg.fillRect(0, 0, W, H);
 
     const pat = scene.add.graphics();
-    pat.lineStyle(1, 0x3d1f00, 0.22);
+    pat.lineStyle(1, 0x7a4010, 0.25);
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 5; c++) {
             const px = c * 78 + 28, py = r * 75 + 30;
@@ -498,11 +498,11 @@ function drawBackground(scene) {
     pat.strokePath();
 
     const top = scene.add.graphics();
-    top.fillStyle(0x220e00, 1); top.fillRect(0, 0, W, 68);
-    top.lineStyle(1.5, 0xc8862a, 0.55); top.strokeRect(7, 7, W - 14, 54);
+    top.fillStyle(0x4a2000, 1); top.fillRect(0, 0, W, 68);
+    top.lineStyle(1.5, 0xc8862a, 0.7); top.strokeRect(7, 7, W - 14, 54);
 
     const bot = scene.add.graphics();
-    bot.fillStyle(0x100500, 0.5); bot.fillRect(0, H - 95, W, 95);
+    bot.fillStyle(0x2d1200, 0.6); bot.fillRect(0, H - 95, W, 95);
 }
 
 // ─── ЧАШКА ───────────────────────────────────────────────────────────────────
